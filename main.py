@@ -65,3 +65,32 @@ def item_based(arr, r_item):
 
 item_based(np.array([[3,5]]),[2,2])
 
+
+# Clustering
+
+# HAC
+# K-mean
+
+def clustering_sim_1(init_centroids,arr):
+    for i in init_centroids:
+        sim = [x.dot(i) for x in arr]
+        print(sim)
+
+def clustering_sim_2(arr):
+    for i in arr:
+        sim = [ np.round(x.dot(i),2) if not np.array_equal(x,i) else 1 for x in arr]
+        print(sim)
+
+print("-------------------")
+a = np.array([
+    [0,0.9,0.4],
+    [0.8,0.3,0.5],
+    [1,0,0],
+    [0,1,0],
+    [0.7,0.4,0.6]])
+clustering_sim_2(a)
+
+
+    
+
+

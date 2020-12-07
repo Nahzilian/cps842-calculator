@@ -32,7 +32,7 @@ print(page_rank(test,2,0.1))
 # Collaborative filtering (CF)
 def user_based_sim(arr,user_r):
     """
-    Accept only 2 users per array
+    Accept separated arrays
     """
     result = []
     for i in range(arr.shape[0]):
@@ -49,27 +49,29 @@ def user_based_sim(arr,user_r):
         numarator = 0
         a_set = []
         b_set = []
-        for j in range(len(user_temp)):
-            numarator += (temp[j] - avg) * (user_temp[j] - avg_user)
+        for j,value in enumerate(user_temp):
+            numarator += (temp[j] - avg) * (value - avg_user)
             a_set.append((temp[j] - avg) ** 2)
-            b_set.append((user_temp[j] - avg_user) ** 2)
-        result.append(np.round(numarator/ math.sqrt(sum(a_set) * sum(b_set)),2))
+            b_set.append((value - avg_user) ** 2)
+        den = math.sqrt(sum(a_set) * sum(b_set))
+        if den > 0:
+            result.append(np.round(numarator/den,2))
+        else:
+            result.append(0)
     return result
 
-def r_score_calc(arr,others):
+def user_score_calc(arr,others):
     return  sum([arr[x] * others[x] for x in range(len(arr))]) / sum(arr)
 
 book = np.array([
-[3,2,5,4],
-[0,3,4,5],
-[4,5,3,4],
-[5,5,3,0]])
+[5,3,0,3],
+[3,0,4,3]])
 
-user = np.array([4,5,2,1])
+user = np.array([4,2,5,4])
 print(user_based_sim(book,user))
 t = [x for x in user_based_sim(book,user) if x > 0]
 print(t)
-print(r_score_calc(t,[5,3]))
+print(user_score_calc(t,[4,4]))
 
 
 # np.array([
@@ -79,32 +81,53 @@ print(r_score_calc(t,[5,3]))
 # [4,5,0,4], book4
 # [0,5,3,5]]) book5
 
-# def sim_calc(a,b, avg_a,avg_b):
-#     numarator = 0
-#     a_set = []
-#     b_set = []
-#     for i in range(a.shape[0]):
-#         numarator += (a[i] - avg_a) * (b[i] - avg_b)
-#         a_set.append((a[i] - avg_a) ** 2)
-#         b_set.append((b[i] - avg_b) ** 2)
-#     result = numarator/ math.sqrt(sum(a_set) * sum(b_set))
-#     if not math.isnan(result):
-#         return result
-#     else:
-#         return 0
 # This function should accept all, however, it will not give right result
 # due to the different in arrays (i.e If there's ranking for 1 item but not the other)
 
-# def item_based(arr, r_item):
-#     avg = [sum(arr[i])/arr.shape[1] for i in range(arr.shape[0])]
-#     sim = []
-#     for i in range(arr.shape[0]):
-#         avg_a = avg[i]
-#         avg_b = sum(r_item)/len(r_item)
-#         sim.append( sim_calc(arr[i],r_item,avg_a,avg_b))
-#     print(sim)
+def item_based_sim(arr,item_r):
+    """
+    Accept only 2 users per array
+    """
+    result = []
+    for i in range(arr.shape[0]):
+        index = []
+        temp = []
+        for j,value in enumerate(arr[i]):
+            if not value == 0:
+                temp.append(value)
+            else:
+                index.append(j)
+        item_temp = [item_r[x] for x in range(len(item_r)) if not x in index]
+        avg_item = round(sum(item_temp)/len(item_temp),2)
+        avg = round(sum(temp)/len(temp),2)
+        numarator = 0
+        a_set = []
+        b_set = []
+        for j,value in enumerate(item_temp):
+            numarator += (temp[j] - avg) * (value - avg_item)
+            a_set.append((temp[j] - avg) ** 2)
+            b_set.append((value - avg_item) ** 2)
+        den = math.sqrt(sum(a_set) * sum(b_set))
+        if den > 0:
+            result.append(np.round(numarator/den,2))
+        else:
+            result.append(0)
+    return result
 
-# item_based(np.array([[3,5]]),[2,2])
+def item_score_calc(arr,others):
+    return  sum([arr[x] * others[x] for x in range(len(arr))]) / sum(arr)
+
+items = np.array([
+[5,3],
+[3,0],
+[0,4],
+[3,3]])
+
+item = np.array([4,4])
+print(item_based_sim(items,item))
+t = [x for x in item_based_sim(items,item) if x > 0]
+print(t)
+print(item_score_calc(t,[4,4]))
 
 
 # Clustering

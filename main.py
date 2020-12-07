@@ -56,6 +56,9 @@ def user_based_sim(arr,user_r):
         result.append(np.round(numarator/ math.sqrt(sum(a_set) * sum(b_set)),2))
     return result
 
+def r_score_calc(arr,others):
+    return  sum([arr[x] * others[x] for x in range(len(arr))]) / sum(arr)
+
 book = np.array([
 [3,2,5,4],
 [0,3,4,5],
@@ -64,6 +67,10 @@ book = np.array([
 
 user = np.array([4,5,2,1])
 print(user_based_sim(book,user))
+t = [x for x in user_based_sim(book,user) if x > 0]
+print(t)
+print(r_score_calc(t,[5,3]))
+
 
 # np.array([
 # [2,3,4,5], book1

@@ -1,18 +1,35 @@
 import numpy as np
 import math
+
 # Link analysis
- 
+
+# page rank
+# HITS
 def page_rank_hit(arr,num,alpha):
+    """
+    Accept numpy array of 0 and 1
+    the number alpha
+    the amount of iterarion num
+    """
+    for i in range(arr.shape[0]):
+        count_non = np.count_nonzero(arr[i])
+        if count_non == 0:
+            arr[i] += 1/(np.count(arr[i]))
+        else:
+            arr[i] = arr[i] * (1/count_non)
     x_0 = np.array([1,0,0])
     arr = arr * (1 - alpha)
     arr = arr + (alpha/arr.shape[0])
+    arr = np.round(arr,2)
     init_state = np.round(x_0.dot(arr),2)
     for _ in range(num):
-        init_state = np.dot(init_state,arr)
+        init_state = np.round(init_state,2).dot(arr)
     return init_state
 
-test = np.array([[0, 0.5, 0.5],[0, 0, 1],[0, 1, 0]])
+# test = np.array([[0, 0.5, 0.5],[0, 0, 1],[0, 1, 0]])
+test = np.array([[0, 1, 1],[0, 0, 1],[0, 1, 0]],np.double)
 print(page_rank_hit(test,2,0.1))
+
 
 
 # Collaborative filtering (CF)
@@ -91,6 +108,11 @@ a = np.array([
 clustering_sim_2(a)
 
 
-    
+def eval_clustering():
+    print("hello world")
 
-
+# a = np.array([[2,3,4,5],
+# [3,4,4,2],
+# [5,0,2,2]])
+# b = np.array([1,2,3,4])
+# print(a @ b)

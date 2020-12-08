@@ -26,8 +26,8 @@ def page_rank(arr,num,alpha):
         init_state = np.round(init_state,2).dot(arr)
     return init_state
 
-test = np.array([[0, 1, 1],[0, 0, 1],[0, 1, 0]],np.double)
-print(page_rank(test,2,0.1))
+# test = np.array([[0, 1, 1],[0, 0, 1],[0, 1, 0]],np.double)
+# print(page_rank(test,2,0.1))
 
 # Collaborative filtering (CF)
 def user_based_sim(arr,user_r):
@@ -67,11 +67,11 @@ book = np.array([
 [5,3,0,3],
 [3,0,4,3]])
 
-user = np.array([4,2,5,4])
-print(user_based_sim(book,user))
-t = [x for x in user_based_sim(book,user) if x > 0]
-print(t)
-print(user_score_calc(t,[4,4]))
+# user = np.array([4,2,5,4])
+# print(user_based_sim(book,user))
+# t = [x for x in user_based_sim(book,user) if x > 0]
+# print(t)
+# print(user_score_calc(t,[4,4]))
 
 
 # np.array([
@@ -124,10 +124,10 @@ items = np.array([
 [3,3]])
 
 item = np.array([4,4])
-print(item_based_sim(items,item))
-t = [x for x in item_based_sim(items,item) if x > 0]
-print(t)
-print(item_score_calc(t,[4,4]))
+# print(item_based_sim(items,item))
+# t = [x for x in item_based_sim(items,item) if x > 0]
+# print(t)
+# print(item_score_calc(t,[4,4]))
 
 
 # Clustering
@@ -135,10 +135,67 @@ print(item_score_calc(t,[4,4]))
 # HAC
 # K-mean
 
-def clustering_sim_1(init_centroids,arr):
-    for i in init_centroids:
-        sim = [x.dot(i) for x in arr]
-        print(sim)
+def k_mean_clustering(arr,centroids,num,org_array,org_num):
+    if num == 0:
+        print(centroids)
+        return centroids
+    elif num < org_num:
+        sim_results = []
+        new_centroids = []
+        for element in org_array:
+            sim_results.append([np.round(element.dot(centroid),2) for centroid in centroids])
+        for i,centroid in enumerate(centroids):
+            temp = []
+            for j,sim_val in enumerate(sim_results):
+                max_n = max(sim_val)
+                if sim_val.index(max_n) == i:
+                    temp.append(org_array[j])
+            new_centroids.append(temp)
+        print(new_centroids)
+        re_cacl_centroids = [np.round(np.round(sum_row(x),2) / len(x),2) for x in new_centroids]
+        k_mean_clustering(arr,re_cacl_centroids,num - 1,org_array,org_num)
+    else:
+        sim_results = []
+        new_centroids = []
+        for element in arr:
+            sim_results.append([np.round(element.dot(centroid),2) for centroid in centroids])
+        for i,centroid in enumerate(centroids):
+            temp = [centroids[i]]
+            for j,sim_val in enumerate(sim_results):
+                max_n = max(sim_val)
+                if sim_val.index(max_n) == i:
+                    temp.append(arr[j])
+            new_centroids.append(temp)
+        re_cacl_centroids = [np.round(np.round(sum_row(x),2) / len(x),2) for x in new_centroids]
+        k_mean_clustering(arr,re_cacl_centroids,num - 1,org_array,org_num)
+
+def sum_row(arr):
+    result = np.zeros((1,len(arr[0])))
+    for i in arr:
+        result += i
+    return np.round(result[0],2)
+
+
+test = np.array([
+    [1,0,0],
+    [0,1,0],
+    [0.7,0.4,0.6]
+])
+
+centroids = np.array([
+    [0,0.9,0.4],
+    [0.8,0.3,0.5]
+])
+
+org_arr = np.array([
+    [0,0.9,0.4],
+    [0.8,0.3,0.5],
+    [1,0,0],
+    [0,1,0],
+    [0.7,0.4,0.6]
+])
+
+print(k_mean_clustering(test,centroids,100,org_arr,100))
 
 def clustering_sim_2(arr):
     for i in arr:

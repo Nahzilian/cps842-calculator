@@ -195,12 +195,15 @@ org_arr = np.array([
     [0.7,0.4,0.6]
 ])
 
-print(k_mean_clustering(test,centroids,100,org_arr,100))
+# print(k_mean_clustering(test,centroids,100,org_arr,100))
 
-def clustering_sim_2(arr):
+def hac_clustering_link(arr):
+    result = []
     for i in arr:
         sim = [ np.round(x.dot(i),2) if not np.array_equal(x,i) else 1 for x in arr]
-        print(sim)
+        result.append(sim)
+    print(result)
+
 
 print("-------------------")
 a = np.array([
@@ -209,7 +212,7 @@ a = np.array([
     [1,0,0],
     [0,1,0],
     [0.7,0.4,0.6]])
-# clustering_sim_2(a)
+hac_clustering_link(a)
 
 
 def eval_clustering():
